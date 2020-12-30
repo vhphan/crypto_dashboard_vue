@@ -67,6 +67,14 @@ export default {
           href: '/about',
           title: 'About',
           icon: 'fa fa-home'
+        },{
+          href: '/latest',
+          title: 'Latest',
+          icon: 'fa fa-home'
+        },{
+          href: '/chart',
+          title: 'Chart',
+          icon: 'fa fa-chart-line'
         },
 
         // {
@@ -110,10 +118,12 @@ export default {
     //   .get('data/daily.json')
     //   .then(response => (this.dailyData = response));
   },
+  computed: {
 
+  },
   methods: {
     onToggleCollapse(collapsed) {
-      console.log(collapsed);
+      console.log('collapsed', collapsed);
       this.collapsed = collapsed;
     },
     onItemClick(event, item, node) {

@@ -1,26 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import cmc from './modules/cmc'
+import error from './modules/error'
+import crypto from './modules/crypto'
+
 Vue.use(Vuex)
 
-const errorSystem = {
-    state: {
-        show: false,
-        text: 'Error'
-    },
-    mutations: {
-        showError(state, message) {
-            state.show = true;
-            state.text = message;
-        }
-    },
-
-};
 export default new Vuex.Store({
-    state: {},
-    mutations: {},
-    actions: {},
-    modules: {
-        error: errorSystem
-    }
+  strict: true,
+  modules: {
+    cmc,
+    error,
+    crypto
+  }
 })

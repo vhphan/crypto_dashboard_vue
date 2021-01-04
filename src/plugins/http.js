@@ -1,7 +1,7 @@
 import axios from "axios";
 import Vue from 'vue'
 
-const flaskInstance = createInstance("http://127.0.0.1:5001");
+const flaskInstance = createInstance("http://localhost:5000");
 const vueInstance = createInstance("http://localhost:8678");
 // const productionInstance = createInstance("http://localhost:3000"); // will change later
 

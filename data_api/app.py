@@ -58,7 +58,11 @@ def fh_crypto_history(symbol, resolution, start, end):
 @cross_origin()
 @cache.memoize(260_000)
 def cc_coin_history(symbol, limit=180):
-    return jsonify(cryptocompare.get_historical_price_day(symbol, curr='USD', limit=limit))
+    data = cryptocompare.get_historical_price_day(symbol, curr='USD', limit=limit)
+    time_values = [datetime.fromtimestamp(d.get('time')) for d in data]
+    time_string = [{'time': t.strftime('%Y-%m-%dT%H%M%S')} for t in time_values]
+    data_mod = [{**d, **time_string[i]} for i, d in enumerate(data)]
+    return jsonify(data_mod)
 
 
 @app.route('/cg/historyhour/<symbol>', defaults=dict(limit=7 * 24))

@@ -1,3 +1,4 @@
+##
 import json
 from pprint import pprint
 
@@ -14,3 +15,19 @@ pprint(eth_daily)
 ##
 with open('../../public/dummy_data/eth_daily.json', 'w') as f:
     json.dump(eth_daily, f)
+
+##
+exc = cryptocompare.get_exchanges();
+
+##
+for exc_name in exc.keys():
+    print(exc_name)
+    avg = cryptocompare.get_avg('BTC', curr='USD', exchange=exc_name)
+    break
+
+##
+avg = cryptocompare.get_avg('BTC', curr='USDT', exchange='Binance')
+
+##
+pairs = cryptocompare.get_pairs(exchange='Binance')
+

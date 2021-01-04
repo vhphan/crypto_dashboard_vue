@@ -62,19 +62,15 @@ export default {
         {
           href: '/',
           title: 'Home',
-          icon: 'fa fa-home'
+          icon: 'fa fa-list'
         }, {
-          href: '/about',
-          title: 'About',
-          icon: 'fa fa-home'
-        },{
-          href: '/latest',
-          title: 'Latest',
-          icon: 'fa fa-home'
-        },{
           href: '/chart',
           title: 'Chart',
           icon: 'fa fa-chart-line'
+        }, {
+          href: '/about',
+          title: 'About',
+          icon: 'fa fa-info'
         },
 
         // {
@@ -118,9 +114,7 @@ export default {
     //   .get('data/daily.json')
     //   .then(response => (this.dailyData = response));
   },
-  computed: {
-
-  },
+  computed: {},
   methods: {
     onToggleCollapse(collapsed) {
       console.log('collapsed', collapsed);

@@ -1,5 +1,7 @@
 <template>
-  <div ref="candle" class="candle">
+  <div ref="candle"
+       class="candle "
+  >
   </div>
 </template>
 
@@ -30,16 +32,20 @@ export default {
     downColor: {type: String, default: '#ef232a'},
   },
   data() {
-    let priceData = this.priceData;
-    let volumeData = this.volumeData;
-    let dates = this.dates;
-    let upColor = this.upColor;
-    let downColor = this.downColor;
-    let symbol = this.symbol;
-    let legendData = [symbol];
     return {
       chartInstance: null,
-      options: {
+    }
+  },
+  computed: {
+    option: function () {
+      let priceData = this.priceData;
+      let volumeData = this.volumeData;
+      let dates = this.dates;
+      let upColor = this.upColor;
+      let downColor = this.downColor;
+      let symbol = this.symbol;
+      let legendData = [symbol];
+      return {
         backgroundColor: '#000',
         animation: false,
         legend: {
@@ -99,13 +105,13 @@ export default {
         },
         grid: [
           {
-            left: '3%',
+            left: '10%',
             right: '1%',
-            height: '50%'
+            height: '60%'
           }, {
-            left: '3%',
+            left: '10%',
             right: '1%',
-            top: '57%',
+            top: '77%',
             height: '10%'
           }
         ],
@@ -150,7 +156,6 @@ export default {
               }
             },
             axisLabel: {color: '#fff'}
-
           }
         ],
         yAxis: [
@@ -159,7 +164,7 @@ export default {
             // splitArea: {
             //     show: true
             // }
-            axisLabel: {color: '#fff'},
+            axisLabel: {textStyle: {color: '#fff'}},
             splitLine: {show: false},
           },
           {
@@ -211,26 +216,60 @@ export default {
             itemStyle: {
               color: function (params) {
                 if (priceData[params.dataIndex][1] > priceData[params.dataIndex][0]) {
-                  return downColor;
+                  return upColor;
                 }
-                return upColor;
+                return downColor;
               },
             }
           }
         ]
-      },
-    };
+      };
+    }
   },
   mounted() {
-    this.chartInstance = echarts.init(this.$refs.candle);
-    this.chartInstance.setOption(this.options);
+    // this.chartInstance = echarts.init(this.$refs.candle);
+    // this.chartInstance.setOption(this.options);
+
+    this.reObs = new ResizeObserver(this.onResize)
+        .observe(this.$refs.candle)
+  },
+  watch: {
+    priceData: function (newVal, oldVal) { // watch it
+      console.log((newVal[0], oldVal[0]));
+      console.log('priceData changed');
+      this.redraw();
+    }
+  },
+  methods: {
+    onResize() {
+      if (typeof this.$refs.candle == 'undefined') {
+        return;
+      }
+      console.log(this.$refs.candle.offsetHeight);
+      console.log(this.$refs.candle.offsetWidth);
+      let chart = this.chartInstance;
+      if (chart) {
+        chart.resize();
+      }
+    },
+    redraw: function () {
+      let options = this.option;
+      try {
+        this.chartInstance.dispose();
+      } catch (err) {
+        console.log(err);
+      }
+      this.chartInstance = echarts.init(this.$refs.candle);
+      this.chartInstance.setOption(options);
+    }
   }
 }
+
 </script>
 
 <style scoped>
 .candle {
-  width: 800px;
-  height: 400px;
+  min-width: 800px;
+  min-height: 400px;
 }
 </style>

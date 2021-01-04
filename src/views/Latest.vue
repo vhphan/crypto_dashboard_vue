@@ -14,18 +14,24 @@ import {mapGetters} from "vuex";
 import Table from "@/components/Table";
 import $ from 'jquery';
 import 'jquery-sparkline'
+import {router} from "@/router";
 // import Trend from 'vuetrend'
 
 export default {
   components: {Table},
   data() {
+    const context = this;
     return {
       tableOptions: {
         rowClickMenu: [
           {
             label: "<i class='fas fa-chart-line'></i> View Charts",
             action: function (e, row) {
-              console.log(e, row);
+              console.log(e);
+              let selectedCoin = row.getData().symbol
+              router.push('/chart', function () {
+                context.$store.dispatch('setSelectedCoin', selectedCoin);
+              });
             }
           },
           {
@@ -65,6 +71,14 @@ export default {
         }
     ),
     tableColumns: function () {
+      const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+
+        // These options are needed to round to whole numbers if that's what you want.
+        //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+        //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+      });
       let context = this;
       let columns = [
         'name',
@@ -84,7 +98,12 @@ export default {
         "market_cap",
         "volume_24h",
         "circulating_supply",
-      ]
+      ];
+      let currencyColumns = [
+        'price',
+        "market_cap",
+        "volume_24h",
+      ];
       let titleCase = this.titleCase;
       // let ctx = this;
 
@@ -141,7 +160,6 @@ export default {
               onRendered(async function () {
                 let hist = (await context.$flask(`/cg/historyhour/${symbol}`)).data;
                 let data = hist.map(d => d['close'])
-                console.log(data);
                 $(cell.getElement()).sparkline(data, {
                   width: "100%",
                   height: "100%",
@@ -157,12 +175,22 @@ export default {
               let finalVal;
               finalVal = typeof cell.getValue() === 'number' ? cell.getValue().toFixed(3) :
                   cell.getValue();
+              if (currencyColumns.includes(d)) {
+                finalVal = formatter.format(finalVal);
+              }
               if (d.includes('percent_change')) {
                 if (cell.getValue() > 0) {
-                  finalVal = '<i class="fa fa-arrow-up float-left text-success"></i>' + finalVal;
+                  finalVal = '<i class="fa fa-arrow-up float-left text-success"></i>' + finalVal + '%';
                 } else {
-                  finalVal = '<i class="fa fa-arrow-down float-left text-danger"></i>' + finalVal;
+                  finalVal = '<i class="fa fa-arrow-down float-left text-danger"></i>' + finalVal + '%';
                 }
+              }
+              if (d === 'circulating_supply') {
+                // const row = cell.getRow();
+                // const symbol = row.getCell("symbol").getValue();
+                const symbol = cell.getData().symbol;
+                // console.log(cell.getData());
+                finalVal = (parseFloat(finalVal)).toLocaleString('en') + ' ' + symbol;
               }
               return finalVal;
             }

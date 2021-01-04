@@ -21,3 +21,4 @@ with open('../../public/dummy_data/cmc_latest.json', 'w') as f:
 #
 # with open('../../public/dummy_data/cmc_quotes_historical.json', 'w') as f:
 #     f.write(json.dumps(r2.data))
+
